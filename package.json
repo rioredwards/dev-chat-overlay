@@ -4,6 +4,7 @@
   "workspaces": ["packages/*"],
   "scripts": {
     "build": "npm run build --workspaces",
+    "test": "npx tsx test/test-e2e.ts",
     "dev:relay": "npm run dev -w @rio/dev-chat-relay"
   }
 }
