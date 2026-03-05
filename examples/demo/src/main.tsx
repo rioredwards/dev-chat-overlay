@@ -12,16 +12,17 @@ const themeVars: Record<Theme, Record<string, string>> = {
     "--bg-b": "#fffdf8",
     "--text": "#122033",
     "--muted": "#5a6c7f",
-    "--glass": "rgba(255, 255, 255, 0.72)",
-    "--glass-border": "rgba(255, 196, 221, 0.42)",
+    "--glass": "rgba(255, 255, 255, 0.74)",
+    "--glass-border": "rgba(255, 177, 216, 0.38)",
     "--primary": "#ffd85f",
+    "--accent": "#ffb7d8",
     "--primary-ink": "#3c2b00",
-    "--secondary": "rgba(255, 214, 92, 0.16)",
-    "--secondary-border": "rgba(255, 188, 99, 0.34)",
-    "--chip": "rgba(255, 210, 234, 0.22)",
-    "--glow-1": "rgba(255, 182, 212, 0.36)",
-    "--glow-2": "rgba(255, 227, 138, 0.32)",
-    "--glow-3": "rgba(255, 205, 153, 0.28)",
+    "--secondary": "rgba(255, 214, 92, 0.12)",
+    "--secondary-border": "rgba(255, 177, 216, 0.32)",
+    "--chip": "rgba(255, 210, 234, 0.18)",
+    "--glow-1": "rgba(255, 183, 217, 0.32)",
+    "--glow-2": "rgba(255, 227, 138, 0.28)",
+    "--glow-3": "rgba(255, 183, 217, 0.22)",
   },
   dark: {
     "--bg-a": "#051e32",
@@ -31,6 +32,7 @@ const themeVars: Record<Theme, Record<string, string>> = {
     "--glass": "rgba(4, 16, 28, 0.62)",
     "--glass-border": "rgba(108, 184, 230, 0.3)",
     "--primary": "#6dd7ff",
+    "--accent": "#ff9dcf",
     "--primary-ink": "#032336",
     "--secondary": "rgba(88, 170, 216, 0.12)",
     "--secondary-border": "rgba(119, 188, 231, 0.28)",
@@ -137,8 +139,7 @@ function App() {
           width: 0.62rem;
           height: 0.62rem;
           border-radius: 999px;
-          background: linear-gradient(135deg, var(--primary), #80ffd9);
-          box-shadow: 0 0 0.7rem rgba(127, 230, 255, 0.75);
+          background: linear-gradient(135deg, var(--primary), var(--accent));
         }
 
         .icon-btn {
@@ -163,7 +164,7 @@ function App() {
           background-color: var(--glass);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
-          box-shadow: 0 22px 42px rgba(2, 12, 22, 0.34);
+          box-shadow: 0 6px 16px rgba(20, 24, 38, 0.08);
           padding: 1.05rem;
         }
 
@@ -209,10 +210,10 @@ function App() {
         }
 
         .btn-primary {
-          background: linear-gradient(135deg, var(--primary), #9df7ff);
+          background: linear-gradient(135deg, var(--primary), var(--accent));
           color: var(--primary-ink);
-          border-color: rgba(210, 245, 255, 0.58);
-          box-shadow: 0 8px 24px rgba(95, 201, 255, 0.34);
+          border-color: rgba(255, 196, 164, 0.4);
+          box-shadow: 0 3px 10px rgba(240, 170, 120, 0.2);
         }
 
         .btn-ghost {
