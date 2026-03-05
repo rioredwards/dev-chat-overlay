@@ -8,119 +8,92 @@ const THEME_STORAGE_KEY = "demo-theme";
 
 const themeVars: Record<Theme, Record<string, string>> = {
   light: {
-    "--bg": "#0a2841",
-    "--text": "#e7f7ff",
-    "--muted": "#c2dce8",
-    "--card": "rgba(8, 35, 56, 0.55)",
-    "--card-border": "rgba(125, 210, 255, 0.28)",
-    "--primary": "#77e8ff",
-    "--primary-ink": "#093244",
-    "--accent": "#80ffaa",
-    "--button-green": "#46d987",
-    "--button-green-ink": "#063b22",
-    "--surface": "rgba(5, 25, 39, 0.62)",
+    "--bg-a": "#0a3554",
+    "--bg-b": "#031a2a",
+    "--text": "#e8f6ff",
+    "--muted": "#b8d5e8",
+    "--glass": "rgba(6, 24, 40, 0.55)",
+    "--glass-border": "rgba(154, 221, 255, 0.35)",
+    "--primary": "#7ce6ff",
+    "--primary-ink": "#08344a",
+    "--secondary": "rgba(126, 213, 255, 0.18)",
+    "--secondary-border": "rgba(149, 220, 255, 0.38)",
+    "--chip": "rgba(117, 203, 250, 0.16)",
+    "--chip-border": "rgba(161, 226, 255, 0.38)",
   },
   dark: {
-    "--bg": "#041827",
-    "--text": "#dbf2ff",
-    "--muted": "#9dc3d8",
-    "--card": "rgba(2, 18, 31, 0.62)",
-    "--card-border": "rgba(108, 186, 230, 0.26)",
-    "--primary": "#6ccff6",
-    "--primary-ink": "#032131",
-    "--accent": "#6df2b6",
-    "--button-green": "#37c876",
-    "--button-green-ink": "#032e1a",
-    "--surface": "rgba(2, 14, 24, 0.76)",
+    "--bg-a": "#051e32",
+    "--bg-b": "#010d17",
+    "--text": "#dff3ff",
+    "--muted": "#90b9cf",
+    "--glass": "rgba(4, 16, 28, 0.62)",
+    "--glass-border": "rgba(108, 184, 230, 0.3)",
+    "--primary": "#6dd7ff",
+    "--primary-ink": "#032336",
+    "--secondary": "rgba(88, 170, 216, 0.14)",
+    "--secondary-border": "rgba(119, 188, 231, 0.28)",
+    "--chip": "rgba(100, 173, 219, 0.14)",
+    "--chip-border": "rgba(118, 190, 233, 0.3)",
   },
 };
 
-const fishSvg = `
-<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
-  <defs>
-    <linearGradient id="water" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#24bff2"/>
-      <stop offset="100%" stop-color="#175bb6"/>
-    </linearGradient>
-  </defs>
-  <rect width="640" height="360" fill="url(#water)" rx="24"/>
-  <g>
-    <animateTransform attributeName="transform" type="translate" values="0 0; 16 -6; 32 0; 16 6; 0 0" dur="3.2s" repeatCount="indefinite" />
-    <g>
-      <animateTransform attributeName="transform" type="rotate" values="0 300 180; 1.5 300 180; 0 300 180; -1.5 300 180; 0 300 180" dur="3.2s" repeatCount="indefinite" />
-      <ellipse cx="300" cy="180" rx="140" ry="80" fill="#f97316"/>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" values="0 430 180; 7 430 180; 0 430 180; -7 430 180; 0 430 180" dur="0.8s" repeatCount="indefinite" />
-        <polygon points="430,180 520,120 520,240" fill="#fb923c"/>
-      </g>
-      <circle cx="250" cy="165" r="10" fill="#111827"/>
-      <path d="M210 210 C230 225 260 225 280 210" stroke="#111827" stroke-width="6" fill="none" stroke-linecap="round"/>
-      <rect x="265" y="105" width="28" height="150" fill="#fff" opacity="0.92"/>
-      <rect x="330" y="110" width="24" height="140" fill="#fff" opacity="0.92"/>
-      <rect x="188" y="122" width="20" height="116" fill="#fff" opacity="0.92"/>
-    </g>
-  </g>
-</svg>
-`;
+const promptIdeas = [
+  "Build me a modern portfolio homepage",
+  "Create a local bakery landing page with online order CTA",
+  "Make a startup waitlist page with pricing section",
+  "Design a clean docs page with dark mode",
+];
 
 function App() {
   const [theme, setTheme] = useState<Theme>(() => {
     const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-    return savedTheme === "dark" ? "dark" : "light";
+    return savedTheme === "light" ? "light" : "dark";
   });
-
-  useEffect(() => {
-    document.body.style.margin = "0";
-    document.body.style.background = themeVars[theme]["--bg"];
-    document.body.style.color = themeVars[theme]["--text"];
-  }, [theme]);
 
   useEffect(() => {
     const root = document.documentElement;
     const vars = themeVars[theme];
     Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
+
+    document.body.style.margin = "0";
+    document.body.style.color = vars["--text"];
+    document.body.style.background = `linear-gradient(165deg, ${vars["--bg-a"]} 0%, ${vars["--bg-b"]} 100%)`;
+
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
-  const nextTheme = useMemo<Theme>(() => (theme === "light" ? "dark" : "light"), [theme]);
+  const nextTheme = useMemo<Theme>(() => (theme === "dark" ? "light" : "dark"), [theme]);
 
   return (
-    <div className="ocean-app">
+    <div className="page">
       <style>{`
         :root {
           color-scheme: dark;
-          --bg: #041827;
-          --text: #dbf2ff;
-          --muted: #9dc3d8;
-          --card: rgba(2, 18, 31, 0.62);
-          --card-border: rgba(108, 186, 230, 0.26);
-          --primary: #6ccff6;
-          --primary-ink: #032131;
-          --accent: #6df2b6;
-          --button-green: #37c876;
-          --button-green-ink: #032e1a;
-          --surface: rgba(2, 14, 24, 0.76);
         }
 
-        .ocean-app {
+        * {
+          box-sizing: border-box;
+        }
+
+        .page {
           position: relative;
           min-height: 100vh;
-          padding: 2rem;
-          box-sizing: border-box;
           overflow: hidden;
-          font-family: "Trebuchet MS", "Avenir Next", "Segoe UI", sans-serif;
+          font-family: "SF Pro Display", "Avenir Next", "Segoe UI", system-ui, sans-serif;
           color: var(--text);
-          background: radial-gradient(circle at 20% 10%, rgba(136, 220, 255, 0.2), transparent 40%),
-                      radial-gradient(circle at 80% 20%, rgba(102, 255, 211, 0.12), transparent 45%),
-                      linear-gradient(165deg, #041827 0%, #06253a 50%, #021520 100%);
+          background:
+            radial-gradient(circle at 14% 12%, rgba(122, 222, 255, 0.22), transparent 36%),
+            radial-gradient(circle at 84% 8%, rgba(85, 255, 192, 0.14), transparent 38%),
+            radial-gradient(circle at 72% 84%, rgba(116, 188, 255, 0.14), transparent 44%),
+            linear-gradient(165deg, var(--bg-a) 0%, var(--bg-b) 100%);
         }
 
-        .water-blobs {
+        .ambient {
           position: absolute;
-          inset: -18vmax;
+          inset: -24vmax;
           pointer-events: none;
-          filter: blur(64px);
-          opacity: 0.65;
+          filter: blur(72px);
+          opacity: 0.7;
           z-index: 0;
         }
 
@@ -132,86 +105,85 @@ function App() {
         }
 
         .blob.one {
-          width: 44vmax;
-          height: 44vmax;
-          left: 6%;
-          top: 12%;
-          background: rgba(70, 201, 255, 0.4);
-          animation-duration: 28s;
+          width: 48vmax;
+          height: 42vmax;
+          top: 10%;
+          left: 4%;
+          background: rgba(58, 180, 255, 0.35);
+          animation-duration: 30s;
         }
 
         .blob.two {
-          width: 52vmax;
-          height: 40vmax;
-          right: 4%;
-          top: 8%;
-          background: rgba(60, 129, 255, 0.35);
-          animation-duration: 34s;
-          animation-direction: reverse;
+          width: 44vmax;
+          height: 44vmax;
+          top: 6%;
+          right: 2%;
+          background: rgba(83, 239, 196, 0.24);
+          animation-duration: 36s;
         }
 
         .blob.three {
-          width: 40vmax;
-          height: 36vmax;
-          left: 34%;
-          bottom: 0%;
-          background: rgba(109, 242, 182, 0.25);
-          animation-duration: 42s;
+          width: 42vmax;
+          height: 34vmax;
+          bottom: -4%;
+          left: 24%;
+          background: rgba(102, 157, 255, 0.26);
+          animation-duration: 33s;
         }
 
-        .sunbeams {
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          z-index: 1;
-          background:
-            linear-gradient(115deg, rgba(189, 241, 255, 0.12) 0%, rgba(189, 241, 255, 0.02) 35%, transparent 60%),
-            linear-gradient(110deg, rgba(157, 230, 255, 0.08) 5%, transparent 45%);
-          mix-blend-mode: screen;
-          opacity: 0.75;
-          animation: beamPulse 11s ease-in-out infinite;
-        }
-
-        .content-shell {
+        .shell {
           position: relative;
-          z-index: 2;
-          max-width: 840px;
+          z-index: 1;
+          max-width: 1080px;
           margin: 0 auto;
-          padding: 1.6rem;
-          border-radius: 1.4rem;
-          background: var(--card);
-          border: 1px solid var(--card-border);
-          box-shadow: 0 20px 50px rgba(0, 14, 22, 0.45), inset 0 1px 0 rgba(220, 247, 255, 0.15);
-          backdrop-filter: blur(16px) saturate(125%);
+          padding: 1.25rem 1rem 5rem;
         }
 
-        .title {
-          margin: 0 0 0.6rem;
-          font-size: clamp(2rem, 4.3vw, 3.2rem);
-          letter-spacing: 0.02em;
-          text-shadow: 0 0 20px rgba(111, 223, 255, 0.38);
-        }
-
-        .desc {
-          margin: 0.5rem 0 0;
-          color: var(--muted);
-          line-height: 1.55;
-        }
-
-        .toolbar {
+        .nav {
           display: flex;
-          gap: 0.8rem;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+          padding: 0.75rem 0.9rem;
+          border: 1px solid var(--glass-border);
+          border-radius: 1rem;
+          background: var(--glass);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .brand {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          font-weight: 700;
+          letter-spacing: 0.01em;
+        }
+
+        .brand-dot {
+          width: 0.7rem;
+          height: 0.7rem;
+          border-radius: 999px;
+          background: linear-gradient(135deg, var(--primary), #80ffd9);
+          box-shadow: 0 0 0.7rem rgba(127, 230, 255, 0.8);
+        }
+
+        .nav-actions {
+          display: flex;
+          gap: 0.6rem;
           flex-wrap: wrap;
-          margin-bottom: 1rem;
+          justify-content: flex-end;
         }
 
         .btn {
-          padding: 0.58rem 0.95rem;
-          border-radius: 999px;
           border: 1px solid transparent;
-          font-weight: 700;
+          border-radius: 0.75rem;
+          font-weight: 600;
+          font-size: 0.9rem;
+          padding: 0.52rem 0.84rem;
           cursor: pointer;
-          transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
+          transition: transform 140ms ease, box-shadow 180ms ease, filter 180ms ease;
         }
 
         .btn:hover {
@@ -223,86 +195,190 @@ function App() {
           transform: translateY(0px) scale(0.985);
         }
 
-        .btn-theme {
-          background: linear-gradient(135deg, var(--primary), #9ef3ff);
+        .btn-primary {
+          background: linear-gradient(135deg, var(--primary), #9df7ff);
           color: var(--primary-ink);
-          border-color: rgba(207, 246, 255, 0.55);
-          box-shadow: 0 8px 24px rgba(89, 190, 245, 0.35);
+          border-color: rgba(210, 245, 255, 0.58);
+          box-shadow: 0 8px 24px rgba(95, 201, 255, 0.34);
         }
 
-        .btn-green {
-          background: linear-gradient(135deg, var(--button-green), #86f9b8);
-          color: var(--button-green-ink);
-          border-color: rgba(192, 255, 220, 0.6);
-          box-shadow: 0 8px 24px rgba(44, 197, 119, 0.3);
+        .btn-secondary {
+          background: var(--secondary);
+          color: var(--text);
+          border-color: var(--secondary-border);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
         }
 
-        .helper {
-          margin-top: 0.9rem;
-          font-size: 0.88rem;
+        .hero {
+          margin-top: 1rem;
+          border: 1px solid var(--glass-border);
+          border-radius: 1.4rem;
+          background: linear-gradient(155deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
+          background-color: var(--glass);
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
+          box-shadow: 0 26px 48px rgba(2, 12, 22, 0.36);
+          padding: clamp(1rem, 2.5vw, 2.2rem);
+        }
+
+        .eyebrow {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          font-size: 0.76rem;
+          text-transform: uppercase;
+          letter-spacing: 0.09em;
+          padding: 0.36rem 0.62rem;
+          border-radius: 999px;
+          border: 1px solid var(--chip-border);
+          background: var(--chip);
           color: var(--muted);
         }
 
-        .helper code {
-          padding: 0.16rem 0.34rem;
-          border-radius: 0.45rem;
-          background: var(--surface);
-          border: 1px solid rgba(136, 214, 245, 0.25);
-          color: var(--text);
+        .title {
+          margin: 0.9rem 0 0.6rem;
+          font-size: clamp(1.8rem, 4.6vw, 3.15rem);
+          line-height: 1.06;
+          letter-spacing: -0.02em;
+          max-width: 14ch;
         }
 
-        .fish {
-          display: block;
+        .desc {
+          margin: 0;
+          color: var(--muted);
+          font-size: clamp(1rem, 2.05vw, 1.16rem);
+          max-width: 62ch;
+          line-height: 1.56;
+        }
+
+        .cta-row {
+          margin-top: 1.2rem;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.65rem;
+        }
+
+        .grid {
           margin-top: 1.15rem;
-          width: min(100%, 410px);
-          border-radius: 0.9rem;
-          border: 1px solid rgba(147, 225, 255, 0.35);
-          box-shadow: 0 20px 40px rgba(2, 13, 22, 0.45);
+          display: grid;
+          grid-template-columns: 1.3fr 1fr;
+          gap: 0.85rem;
+        }
+
+        .card {
+          border: 1px solid var(--glass-border);
+          border-radius: 1rem;
+          background: linear-gradient(165deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+          background-color: rgba(3, 20, 34, 0.36);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          padding: 0.9rem;
+        }
+
+        .card h3 {
+          margin: 0;
+          font-size: 1rem;
+          letter-spacing: 0.01em;
+        }
+
+        .card p {
+          margin: 0.44rem 0 0;
+          color: var(--muted);
+          font-size: 0.92rem;
+          line-height: 1.5;
+        }
+
+        .prompt-list {
+          margin-top: 0.72rem;
+          display: grid;
+          gap: 0.48rem;
+        }
+
+        .prompt-chip {
+          border: 1px solid var(--chip-border);
+          background: var(--chip);
+          color: var(--text);
+          border-radius: 0.72rem;
+          padding: 0.48rem 0.62rem;
+          font-size: 0.84rem;
+        }
+
+        .mini-note {
+          margin-top: 0.7rem;
+          font-size: 0.78rem;
+          color: var(--muted);
+        }
+
+        @media (max-width: 860px) {
+          .grid {
+            grid-template-columns: 1fr;
+          }
         }
 
         @keyframes drift {
           0% { transform: translate3d(0, 0, 0) scale(1); }
-          33% { transform: translate3d(2.5vmax, -1.7vmax, 0) scale(1.04); }
-          66% { transform: translate3d(-1.8vmax, 2.1vmax, 0) scale(0.97); }
+          33% { transform: translate3d(2.2vmax, -1.4vmax, 0) scale(1.03); }
+          66% { transform: translate3d(-1.7vmax, 1.9vmax, 0) scale(0.98); }
           100% { transform: translate3d(0, 0, 0) scale(1); }
-        }
-
-        @keyframes beamPulse {
-          0%, 100% { opacity: 0.6; transform: translateX(0px); }
-          50% { opacity: 0.85; transform: translateX(-10px); }
         }
       `}</style>
 
-      <div className="water-blobs" aria-hidden>
+      <div className="ambient" aria-hidden>
         <span className="blob one" />
         <span className="blob two" />
         <span className="blob three" />
       </div>
-      <div className="sunbeams" aria-hidden />
 
-      <main className="content-shell">
-        <div className="toolbar">
-          <button className="btn btn-theme" onClick={() => setTheme(nextTheme)}>
-            Switch to {nextTheme} mode
-          </button>
-          <button className="btn btn-green">I'm a button</button>
-        </div>
+      <div className="shell">
+        <header className="nav">
+          <div className="brand">
+            <span className="brand-dot" />
+            OpenClaw Playground
+          </div>
+          <div className="nav-actions">
+            <button className="btn btn-secondary" onClick={() => setTheme(nextTheme)}>
+              {nextTheme === "light" ? "Light mode" : "Dark mode"}
+            </button>
+            <button className="btn btn-primary">Start building</button>
+          </div>
+        </header>
 
-        <h1 className="title">Clawdbot’s Underwater Lounge</h1>
-        <p className="desc">
-          This is a cozy submerged control room for crustaceans and curious humans.
-          The chat widget is floating bottom-right, ready to help with site edits.
-        </p>
-        <p className="helper">
-          Try: <code>Make the heading bigger</code> or <code>Add a dark mode toggle</code>
-        </p>
+        <section className="hero">
+          <span className="eyebrow">No setup • From phone or desktop • Live preview</span>
+          <h1 className="title">Build a full website by chatting.</h1>
+          <p className="desc">
+            This is a blank-slate builder powered by Dev Chat. Describe what you want,
+            and watch your site update in real time. No coding required to get started.
+            Great for non-programmers, fast prototypes, and instant idea testing.
+          </p>
 
-        <img
-          src={`data:image/svg+xml;utf8,${encodeURIComponent(fishSvg)}`}
-          alt="A fish illustration"
-          className="fish"
-        />
-      </main>
+          <div className="cta-row">
+            <button className="btn btn-primary">Open chat & begin</button>
+            <button className="btn btn-secondary">See how it works</button>
+          </div>
+
+          <div className="grid">
+            <article className="card">
+              <h3>Your workflow</h3>
+              <p>
+                Chat your intent → watch visual updates live → iterate until it feels right.
+                It’s the easiest on-ramp to creating a personal site, business page, or idea demo.
+              </p>
+              <div className="mini-note">Future direction: multi-project workspaces and hosted app instances.</div>
+            </article>
+
+            <article className="card">
+              <h3>Try a prompt</h3>
+              <div className="prompt-list">
+                {promptIdeas.map((idea) => (
+                  <div className="prompt-chip" key={idea}>{idea}</div>
+                ))}
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
 
       <DevChatOverlay
         url={`${location.protocol === "https:" ? "wss:" : "ws:"}//${location.host}/relay-ws`}
