@@ -2,7 +2,7 @@ import { WebSocketServer } from "ws";
 import { createServer } from "node:http";
 import type { RelayConfig } from "./types.js";
 import { validateOrigin, assertDevMode } from "./auth.js";
-import { connectToOpenClaw } from "./openclaw.js";
+import { createOpenClawHTTP } from "./openclaw.js";
 import { Bridge } from "./bridge.js";
 
 export function startRelay(config: RelayConfig): { close: () => void } {
@@ -15,7 +15,7 @@ export function startRelay(config: RelayConfig): { close: () => void } {
 
   const wss = new WebSocketServer({ server: httpServer });
 
-  const openclaw = connectToOpenClaw(config.openclawUrl, () => {});
+  const openclaw = createOpenClawHTTP(config.openclawUrl, config.openclawToken, config.projectDir);
 
   const bridge = new Bridge(openclaw, config.secret);
 
@@ -32,7 +32,7 @@ export function startRelay(config: RelayConfig): { close: () => void } {
 
   httpServer.listen(config.port, () => {
     console.log(`[relay] Listening on ws://localhost:${config.port}`);
-    console.log(`[relay] OpenClaw target: ${config.openclawUrl}`);
+    console.log(`[relay] OpenClaw HTTP: ${config.openclawUrl}/v1/chat/completions`);
     console.log(`[relay] Project dir: ${config.projectDir}`);
   });
 

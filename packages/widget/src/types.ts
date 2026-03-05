@@ -6,9 +6,16 @@ export type AgentType = "codex" | "claude-code";
 
 // ─── Upstream (Client -> Relay) ─────────────────────────────────────────────
 
+export interface DevChatContext {
+  source?: string;
+  appId?: string;
+  activeUrl?: string;
+  pageTitle?: string;
+}
+
 export type UpstreamMessage =
   | { type: "auth"; secret: string }
-  | { type: "message"; id: string; text: string; agent?: AgentType }
+  | { type: "message"; id: string; text: string; agent?: AgentType; context?: DevChatContext }
   | { type: "cancel"; taskId: string }
   | { type: "confirm_response"; taskId: string; approved: boolean };
 

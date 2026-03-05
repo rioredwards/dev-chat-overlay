@@ -13,4 +13,5 @@ export type {
   DownstreamMessage,
   TaskStatus,
   AgentType,
+  DevChatContext,
 } from "./types.js";

@@ -3,6 +3,7 @@ import type {
   DownstreamMessage,
   ConnectionState,
   AgentType,
+  DevChatContext,
 } from "../types.js";
 
 export type MessageListener = (msg: DownstreamMessage) => void;
@@ -22,6 +23,17 @@ export interface DevChatSocket {
 let idCounter = 0;
 function nextId(): string {
   return `msg_${Date.now()}_${++idCounter}`;
+}
+
+function detectClientContext(): DevChatContext | undefined {
+  if (typeof window === "undefined") return undefined;
+
+  return {
+    source: "devchat-web",
+    appId: window.location.hostname,
+    activeUrl: window.location.href,
+    pageTitle: document?.title,
+  };
 }
 
 export function createSocket(url: string, secret: string): DevChatSocket {
@@ -109,7 +121,7 @@ export function createSocket(url: string, secret: string): DevChatSocket {
 
     sendMessage(text: string, agent?: AgentType): string {
       const id = nextId();
-      send({ type: "message", id, text, agent });
+      send({ type: "message", id, text, agent, context: detectClientContext() });
       return id;
     },
 

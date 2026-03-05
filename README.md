@@ -93,14 +93,36 @@ dev-chat-relay [options]
 
 All messages are JSON with a `type` field.
 
+### Built-in context + scope behavior (no extra setup)
+
+The relay now injects a system context envelope on every task automatically:
+
+- Locks edits to `--project` root by default
+- Instructs the agent to focus on the currently viewed website/app
+- Requires explicit user override for out-of-scope edits
+- Asks for clarification when target files are ambiguous
+
+The widget also auto-sends page context (`source`, `appId`, `activeUrl`, `pageTitle`) with each `message` event.
+
 ### Client → Relay
 
 | Type | Fields | Purpose |
 |------|--------|---------|
 | `auth` | `secret` | Authenticate (must be first message) |
-| `message` | `id`, `text`, `agent?` | Send a coding task |
+| `message` | `id`, `text`, `agent?`, `context?` | Send a coding task + optional client context |
 | `cancel` | `taskId` | Cancel in-flight task |
 | `confirm_response` | `taskId`, `approved` | Respond to confirmation gate |
+
+#### `message.context` schema (optional)
+
+```json
+{
+  "source": "devchat-web",
+  "appId": "localhost",
+  "activeUrl": "http://localhost:3000/",
+  "pageTitle": "My App"
+}
+```
 
 ### Relay → Client
 
