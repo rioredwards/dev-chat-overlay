@@ -8,17 +8,20 @@ const THEME_STORAGE_KEY = "demo-theme";
 
 const themeVars: Record<Theme, Record<string, string>> = {
   light: {
-    "--bg-a": "#0a3554",
-    "--bg-b": "#031a2a",
-    "--text": "#e8f6ff",
-    "--muted": "#b8d5e8",
-    "--glass": "rgba(6, 24, 40, 0.52)",
-    "--glass-border": "rgba(154, 221, 255, 0.35)",
-    "--primary": "#7ce6ff",
-    "--primary-ink": "#08344a",
-    "--secondary": "rgba(126, 213, 255, 0.14)",
-    "--secondary-border": "rgba(149, 220, 255, 0.34)",
-    "--chip": "rgba(117, 203, 250, 0.12)",
+    "--bg-a": "#ffffff",
+    "--bg-b": "#fffdf8",
+    "--text": "#122033",
+    "--muted": "#5a6c7f",
+    "--glass": "rgba(255, 255, 255, 0.72)",
+    "--glass-border": "rgba(255, 196, 221, 0.42)",
+    "--primary": "#ffd85f",
+    "--primary-ink": "#3c2b00",
+    "--secondary": "rgba(255, 214, 92, 0.16)",
+    "--secondary-border": "rgba(255, 188, 99, 0.34)",
+    "--chip": "rgba(255, 210, 234, 0.22)",
+    "--glow-1": "rgba(255, 182, 212, 0.36)",
+    "--glow-2": "rgba(255, 227, 138, 0.32)",
+    "--glow-3": "rgba(255, 205, 153, 0.28)",
   },
   dark: {
     "--bg-a": "#051e32",
@@ -32,6 +35,9 @@ const themeVars: Record<Theme, Record<string, string>> = {
     "--secondary": "rgba(88, 170, 216, 0.12)",
     "--secondary-border": "rgba(119, 188, 231, 0.28)",
     "--chip": "rgba(100, 173, 219, 0.1)",
+    "--glow-1": "rgba(122, 222, 255, 0.22)",
+    "--glow-2": "rgba(85, 255, 192, 0.14)",
+    "--glow-3": "rgba(116, 188, 255, 0.14)",
   },
 };
 
@@ -73,9 +79,9 @@ function App() {
           font-family: "SF Pro Display", "Avenir Next", "Segoe UI", system-ui, sans-serif;
           color: var(--text);
           background:
-            radial-gradient(circle at 12% 12%, rgba(122, 222, 255, 0.22), transparent 36%),
-            radial-gradient(circle at 86% 10%, rgba(85, 255, 192, 0.14), transparent 38%),
-            radial-gradient(circle at 72% 84%, rgba(116, 188, 255, 0.14), transparent 44%),
+            radial-gradient(circle at 12% 12%, var(--glow-1), transparent 36%),
+            radial-gradient(circle at 86% 10%, var(--glow-2), transparent 38%),
+            radial-gradient(circle at 72% 84%, var(--glow-3), transparent 44%),
             linear-gradient(165deg, var(--bg-a) 0%, var(--bg-b) 100%);
         }
 
@@ -95,9 +101,9 @@ function App() {
           animation: drift linear infinite;
         }
 
-        .blob.one { width: 48vmax; height: 42vmax; top: 10%; left: 4%; background: rgba(58, 180, 255, 0.35); animation-duration: 30s; }
-        .blob.two { width: 44vmax; height: 44vmax; top: 6%; right: 2%; background: rgba(83, 239, 196, 0.24); animation-duration: 36s; }
-        .blob.three { width: 42vmax; height: 34vmax; bottom: -4%; left: 24%; background: rgba(102, 157, 255, 0.26); animation-duration: 33s; }
+        .blob.one { width: 48vmax; height: 42vmax; top: 10%; left: 4%; background: var(--glow-1); animation-duration: 30s; }
+        .blob.two { width: 44vmax; height: 44vmax; top: 6%; right: 2%; background: var(--glow-2); animation-duration: 36s; }
+        .blob.three { width: 42vmax; height: 34vmax; bottom: -4%; left: 24%; background: var(--glow-3); animation-duration: 33s; }
 
         .shell {
           position: relative;
