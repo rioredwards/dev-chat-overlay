@@ -3,10 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "mock": "MOCK_OC_PORT=19789 npx tsx ../../test/mock-openclaw.ts",
-    "relay": "DEVCHAT_SECRET=demo-secret node ../../packages/relay/dist/cli.js --project . --openclaw-url ws://127.0.0.1:19789",
-    "start": "concurrently 'npm run dev' 'npm run relay' 'npm run mock'"
+    "dev": "concurrently -n vite,relay 'vite' 'npx tsx watch --env-file=.env ../../packages/relay/src/cli.ts --project .'",
+    "dev:mock": "concurrently -n vite,relay,mock 'vite' 'npx tsx watch --env-file=.env ../../packages/relay/src/cli.ts --project . --openclaw-url http://127.0.0.1:19789' 'MOCK_OC_PORT=19789 npx tsx ../../test/mock-openclaw.ts'"
   },
   "dependencies": {
     "react": "^19.0.0",

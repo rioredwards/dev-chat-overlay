@@ -6,7 +6,8 @@ function parseArgs(argv: string[]): RelayConfig {
   let port = 18790;
   let secret = process.env.DEVCHAT_SECRET ?? "";
   let projectDir = process.cwd();
-  let openclawUrl = "ws://127.0.0.1:18789";
+  let openclawUrl = process.env.OPENCLAW_URL ?? "http://127.0.0.1:18789";
+  let openclawToken = process.env.OPENCLAW_TOKEN ?? "";
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
@@ -24,6 +25,10 @@ function parseArgs(argv: string[]): RelayConfig {
       case "--openclaw-url":
         openclawUrl = args[++i];
         break;
+      case "--openclaw-token":
+      case "-t":
+        openclawToken = args[++i];
+        break;
       case "--help":
       case "-h":
         printHelp();
@@ -36,7 +41,12 @@ function parseArgs(argv: string[]): RelayConfig {
     process.exit(1);
   }
 
-  return { port, secret, projectDir, openclawUrl };
+  if (!openclawToken) {
+    console.error("[relay] No OpenClaw token provided. Set OPENCLAW_TOKEN env var or pass --openclaw-token <value>");
+    process.exit(1);
+  }
+
+  return { port, secret, projectDir, openclawUrl, openclawToken };
 }
 
 function printHelp() {
@@ -47,11 +57,12 @@ Usage:
   dev-chat-relay [options]
 
 Options:
-  --port, -p <n>         Relay port (default: 18790)
-  --secret, -s <str>     Auth secret (or set DEVCHAT_SECRET env var)
-  --project <path>       Project directory (default: cwd)
-  --openclaw-url <url>   OpenClaw WebSocket URL (default: ws://127.0.0.1:18789)
-  --help, -h             Show this help
+  --port, -p <n>              Relay port (default: 18790)
+  --secret, -s <str>          Auth secret (or set DEVCHAT_SECRET env var)
+  --project <path>            Project directory (default: cwd)
+  --openclaw-url <url>        OpenClaw HTTP base URL (default: http://127.0.0.1:18789)
+  --openclaw-token, -t <str>  Gateway token (or set OPENCLAW_TOKEN env var)
+  --help, -h                  Show this help
 `);
 }
 
