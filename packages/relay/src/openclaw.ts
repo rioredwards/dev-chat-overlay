@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import type { DownstreamMessage, UpstreamMessage, DevChatContext } from "./types.js";
 import { buildOpenClawMessages } from "./prompt-context.js";
 
@@ -15,8 +16,18 @@ export function createOpenClawHTTP(
 ): OpenClawConnection {
   let handler: ((msg: DownstreamMessage) => void) | null = null;
   const inflight = new Map<string, AbortController>();
-  const userId = `devchat:relay-${Date.now()}`;
+  const fallbackUserId = `devchat:project:${crypto
+    .createHash("sha1")
+    .update(projectDir)
+    .digest("hex")
+    .slice(0, 12)}`;
   let closed = false;
+
+  function resolveUserId(context?: DevChatContext): string {
+    if (context?.appId?.trim()) return `devchat:app:${context.appId.trim()}`;
+    if (context?.activeUrl?.trim()) return `devchat:url:${context.activeUrl.trim()}`;
+    return fallbackUserId;
+  }
 
   function emit(msg: DownstreamMessage) {
     handler?.(msg);
@@ -39,7 +50,7 @@ export function createOpenClawHTTP(
           model: "openclaw:main",
           messages: buildOpenClawMessages(text, projectDir, context),
           stream: true,
-          user: userId,
+          user: resolveUserId(context),
         }),
         signal: controller.signal,
       });
