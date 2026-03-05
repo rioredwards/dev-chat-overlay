@@ -1,0 +1,9 @@
+{
+  "name": "dev-chat-overlay",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "dev:relay": "npm run dev -w @rio/dev-chat-relay"
+  }
+}
