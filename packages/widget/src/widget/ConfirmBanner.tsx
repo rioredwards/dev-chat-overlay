@@ -5,14 +5,13 @@ interface Props {
   onRespond: (taskId: string, approved: boolean) => void;
 }
 
-export function ConfirmDialog({ confirm, onRespond }: Props) {
+export function ConfirmBanner({ confirm, onRespond }: Props) {
   return (
     <div className="__dco-confirm">
-      <div className="__dco-confirm__label">Confirmation Required</div>
-      <div className="__dco-confirm__desc">
+      <div className="__dco-confirm__body">
+        <span className="__dco-confirm__label">Confirmation required</span>
         <strong>{confirm.action}</strong>
-        <br />
-        {confirm.description}
+        <span className="__dco-confirm__desc">{confirm.description}</span>
       </div>
       <div className="__dco-confirm__actions">
         <button
