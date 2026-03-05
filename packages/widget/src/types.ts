@@ -65,6 +65,7 @@ export interface FileChange {
 export interface DevChatConfig {
   url: string;
   secret: string;
+  appId?: string;
   agent?: AgentType;
   position?: "bottom-right" | "bottom-left";
 }

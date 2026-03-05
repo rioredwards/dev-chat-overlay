@@ -35,7 +35,7 @@ export function useDevChat(config: DevChatConfig): DevChatState {
   const taskMapRef = useRef(new Map<string, string>());
 
   useEffect(() => {
-    const socket = createSocket(config.url, config.secret);
+    const socket = createSocket(config.url, config.secret, config.appId);
     socketRef.current = socket;
 
     const unsubState = socket.onStateChange(setConnectionState);
@@ -52,7 +52,7 @@ export function useDevChat(config: DevChatConfig): DevChatState {
       socketRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [config.url, config.secret]);
+  }, [config.url, config.secret, config.appId]);
 
   function handleDownstream(msg: DownstreamMessage) {
     switch (msg.type) {

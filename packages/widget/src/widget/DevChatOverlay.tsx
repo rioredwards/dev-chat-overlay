@@ -1,14 +1,23 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { DevChatConfig } from "../types.js";
 import { useDevChat } from "./useDevChat.js";
 import { ChatDrawer } from "./ChatDrawer.js";
+import { readDrawerOpenState, writeDrawerOpenState } from "./openStateStorage.js";
 import "./styles.css";
 
 export function DevChatOverlay(props: DevChatConfig) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(() => readDrawerOpenState(props.appId) ?? false);
   const state = useDevChat(props);
   const position = props.position ?? "bottom-right";
   const isLeft = position === "bottom-left";
+
+  const toggleOpen = useCallback(() => {
+    setOpen((current) => {
+      const next = !current;
+      writeDrawerOpenState(props.appId, next);
+      return next;
+    });
+  }, [props.appId]);
 
   if (process.env.NODE_ENV !== "development") return null;
 
@@ -29,7 +38,7 @@ export function DevChatOverlay(props: DevChatConfig) {
       {open && <ChatDrawer state={state} position={position} />}
       <button
         className={`__dco-trigger ${isLeft ? "__dco-trigger--left" : ""}`}
-        onClick={() => setOpen((o) => !o)}
+        onClick={toggleOpen}
         aria-label={open ? "Close dev chat" : "Open dev chat"}
       >
         {open ? (

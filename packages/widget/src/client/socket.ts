@@ -25,18 +25,19 @@ function nextId(): string {
   return `msg_${Date.now()}_${++idCounter}`;
 }
 
-function detectClientContext(): DevChatContext | undefined {
+function detectClientContext(appId?: string): DevChatContext | undefined {
   if (typeof window === "undefined") return undefined;
+  const configuredAppId = appId?.trim();
 
   return {
     source: "devchat-web",
-    appId: window.location.hostname,
+    appId: configuredAppId || window.location.hostname,
     activeUrl: window.location.href,
     pageTitle: document?.title,
   };
 }
 
-export function createSocket(url: string, secret: string): DevChatSocket {
+export function createSocket(url: string, secret: string, appId?: string): DevChatSocket {
   let ws: WebSocket | null = null;
   let state: ConnectionState = "disconnected";
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
@@ -121,7 +122,7 @@ export function createSocket(url: string, secret: string): DevChatSocket {
 
     sendMessage(text: string, agent?: AgentType): string {
       const id = nextId();
-      send({ type: "message", id, text, agent, context: detectClientContext() });
+      send({ type: "message", id, text, agent, context: detectClientContext(appId) });
       return id;
     },
 

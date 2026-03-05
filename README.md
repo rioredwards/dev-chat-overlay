@@ -55,6 +55,7 @@ import { DevChatOverlay } from '@rio/dev-chat-widget';
 <DevChatOverlay
   url="ws://localhost:18790"
   secret={process.env.NEXT_PUBLIC_DEVCHAT_SECRET!}
+  appId="my-app-dev"
 />
 ```
 
@@ -63,7 +64,7 @@ import { DevChatOverlay } from '@rio/dev-chat-widget';
 ```ts
 if (process.env.NODE_ENV === 'development') {
   import('@rio/dev-chat-widget').then(({ mountDevChat }) =>
-    mountDevChat({ url: 'ws://localhost:18790', secret: 'my-secret' })
+    mountDevChat({ url: 'ws://localhost:18790', secret: 'my-secret', appId: 'my-app-dev' })
   );
 }
 ```
@@ -155,3 +156,14 @@ npm run build
 # Run tests
 npm test
 ```
+
+## Manual Verification
+
+### Reload persistence for drawer state
+
+1. Start the demo or host app in development mode.
+2. Open the chat drawer with the floating trigger.
+3. Reload the page.
+4. Confirm the drawer reopens automatically.
+5. Close the drawer, reload again, and confirm it stays closed.
+6. Optional scope check: set a different `appId` value and confirm it uses an independent open/closed state.
