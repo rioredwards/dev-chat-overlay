@@ -5,11 +5,12 @@
  * Uses non-standard ports to avoid conflicting with real OpenClaw.
  */
 import { WebSocketServer, WebSocket } from "ws";
+import { createServer } from "node:net";
 import { startRelay } from "../packages/relay/src/server.js";
 
 const SECRET = "test-secret";
-const MOCK_OC_PORT = 19789;
-const RELAY_PORT = 19790;
+let MOCK_OC_PORT = 19789;
+let RELAY_PORT = 19790;
 let pass = 0;
 let fail = 0;
 
@@ -25,6 +26,26 @@ function assert(condition: boolean, label: string) {
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+function getFreePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const server = createServer();
+    server.listen(0, "127.0.0.1", () => {
+      const addr = server.address();
+      if (!addr || typeof addr === "string") {
+        server.close();
+        reject(new Error("Failed to get free port"));
+        return;
+      }
+      const port = addr.port;
+      server.close((err) => {
+        if (err) return reject(err);
+        resolve(port);
+      });
+    });
+    server.on("error", reject);
+  });
 }
 
 // ─── Mock OpenClaw ──────────────────────────────────────────────────────────
@@ -109,6 +130,12 @@ async function authWidget(ws: WebSocket): Promise<boolean> {
 
 async function run() {
   console.log("\nStarting integration test...\n");
+
+  MOCK_OC_PORT = await getFreePort();
+  RELAY_PORT = await getFreePort();
+  while (RELAY_PORT === MOCK_OC_PORT) {
+    RELAY_PORT = await getFreePort();
+  }
 
   const mockOC = await startMockOpenClaw();
   await sleep(200);
