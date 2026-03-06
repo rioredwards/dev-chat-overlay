@@ -54,7 +54,8 @@ import { DevChatOverlay } from '@rio/dev-chat-widget';
 // In your layout or root component — only renders in development
 <DevChatOverlay
   url="ws://localhost:18790"
-  secret={process.env.NEXT_PUBLIC_DEVCHAT_SECRET!}
+  secret={process.env.NEXT_PUBLIC_DEVCHAT_SECRET}
+  token={window.__DEVCHAT_TOKEN__} // optional: invite-only JWT mode
   appId="my-app-dev"
 />
 ```
@@ -143,6 +144,7 @@ The widget also auto-sends page context (`source`, `appId`, `activeUrl`, `pageTi
 
 - **Dev-only**: widget won't mount and relay won't start in production
 - **Auth handshake**: first WS message must contain either the correct shared secret or a valid HS256 JWT token
+- **Invite mode**: optional `apps/invite-web` starter app provides email allowlist + token minting
 - **Origin check**: relay validates localhost or Tailscale IP range (100.x.x.x)
 - **Confirmation gates**: destructive operations pause for user approval
 
