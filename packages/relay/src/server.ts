@@ -17,7 +17,7 @@ export function startRelay(config: RelayConfig): { close: () => void } {
 
   const openclaw = createOpenClawHTTP(config.openclawUrl, config.openclawToken, config.projectDir);
 
-  const bridge = new Bridge(openclaw, config.secret);
+  const bridge = new Bridge(openclaw, config.secret, config.jwtSecret, config.jwtAudience);
 
   wss.on("connection", (ws, req) => {
     if (!validateOrigin(req, config.allowedOrigins)) {

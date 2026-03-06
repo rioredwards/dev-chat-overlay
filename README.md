@@ -85,6 +85,8 @@ dev-chat-relay [options]
 
 --port, -p <n>         Relay port (default: 18790)
 --secret, -s <str>     Auth secret (or set DEVCHAT_SECRET env var)
+--jwt-secret <str>     Optional HS256 JWT secret for invite-only auth
+--jwt-audience <str>   JWT audience (default: devchat-relay)
 --project <path>       Project directory (default: cwd)
 --openclaw-url <url>   OpenClaw WebSocket URL (default: ws://127.0.0.1:18789)
 --help, -h             Show help
@@ -109,7 +111,7 @@ The widget also auto-sends page context (`source`, `appId`, `activeUrl`, `pageTi
 
 | Type | Fields | Purpose |
 |------|--------|---------|
-| `auth` | `secret` | Authenticate (must be first message) |
+| `auth` | `secret?`, `token?` | Authenticate (must be first message) |
 | `message` | `id`, `text`, `agent?`, `context?` | Send a coding task + optional client context |
 | `cancel` | `taskId` | Cancel in-flight task |
 | `confirm_response` | `taskId`, `approved` | Respond to confirmation gate |
@@ -140,7 +142,7 @@ The widget also auto-sends page context (`source`, `appId`, `activeUrl`, `pageTi
 ## Security
 
 - **Dev-only**: widget won't mount and relay won't start in production
-- **Auth handshake**: first WS message must contain the correct secret
+- **Auth handshake**: first WS message must contain either the correct shared secret or a valid HS256 JWT token
 - **Origin check**: relay validates localhost or Tailscale IP range (100.x.x.x)
 - **Confirmation gates**: destructive operations pause for user approval
 

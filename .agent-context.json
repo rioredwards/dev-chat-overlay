@@ -1,0 +1,11 @@
+{
+  "profile": "devchat-app",
+  "targets": [
+    "openclaw",
+    "claude",
+    "cursor",
+    "agents"
+  ],
+  "includeGlobal": false,
+  "extraSkills": []
+}

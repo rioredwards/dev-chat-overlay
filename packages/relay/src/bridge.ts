@@ -1,11 +1,15 @@
 import type WebSocket from "ws";
 import type { UpstreamMessage, DownstreamMessage } from "./types.js";
 import type { OpenClawConnection } from "./openclaw.js";
-import { validateSecret } from "./auth.js";
+import { validateSecret, verifyRelayToken } from "./auth.js";
 
 interface BridgedClient {
   ws: WebSocket;
   authenticated: boolean;
+  identity?: {
+    email: string;
+    role?: string;
+  };
 }
 
 export class Bridge {
@@ -14,6 +18,8 @@ export class Bridge {
   constructor(
     private openclaw: OpenClawConnection,
     private secret: string,
+    private jwtSecret?: string,
+    private jwtAudience?: string,
   ) {
     this.openclaw.onMessage((msg) => this.broadcastDownstream(msg));
   }
@@ -44,11 +50,24 @@ export class Bridge {
     if (!client) return;
 
     if (msg.type === "auth") {
-      const ok = validateSecret(msg.secret, this.secret);
+      let ok = false;
+
+      if (msg.token && this.jwtSecret) {
+        const claims = verifyRelayToken(msg.token, this.jwtSecret, this.jwtAudience);
+        if (claims) {
+          ok = true;
+          client.identity = { email: claims.sub, role: claims.role };
+        }
+      }
+
+      if (!ok && msg.secret) {
+        ok = validateSecret(msg.secret, this.secret);
+      }
+
       client.authenticated = ok;
       this.sendTo(ws, { type: "authenticated", ok });
       if (!ok) {
-        ws.close(4001, "Invalid secret");
+        ws.close(4001, "Invalid credentials");
       }
       return;
     }

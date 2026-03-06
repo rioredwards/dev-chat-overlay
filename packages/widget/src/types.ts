@@ -14,7 +14,7 @@ export interface DevChatContext {
 }
 
 export type UpstreamMessage =
-  | { type: "auth"; secret: string }
+  | { type: "auth"; secret?: string; token?: string }
   | { type: "message"; id: string; text: string; agent?: AgentType; context?: DevChatContext }
   | { type: "cancel"; taskId: string }
   | { type: "confirm_response"; taskId: string; approved: boolean };
@@ -64,7 +64,8 @@ export interface FileChange {
 
 export interface DevChatConfig {
   url: string;
-  secret: string;
+  secret?: string;
+  token?: string;
   appId?: string;
   agent?: AgentType;
   position?: "bottom-right" | "bottom-left";

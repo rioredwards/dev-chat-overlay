@@ -37,7 +37,11 @@ function detectClientContext(appId?: string): DevChatContext | undefined {
   };
 }
 
-export function createSocket(url: string, secret: string, appId?: string): DevChatSocket {
+export function createSocket(
+  url: string,
+  auth: { secret?: string; token?: string },
+  appId?: string,
+): DevChatSocket {
   let ws: WebSocket | null = null;
   let state: ConnectionState = "disconnected";
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
@@ -68,7 +72,7 @@ export function createSocket(url: string, secret: string, appId?: string): DevCh
     ws.addEventListener("open", () => {
       setState("authenticating");
       reconnectDelay = 1000;
-      send({ type: "auth", secret });
+      send({ type: "auth", secret: auth.secret, token: auth.token });
     });
 
     ws.addEventListener("message", (event) => {

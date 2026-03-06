@@ -15,7 +15,7 @@ export interface DevChatContext {
 }
 
 export type UpstreamMessage =
-  | { type: "auth"; secret: string }
+  | { type: "auth"; secret?: string; token?: string }
   | { type: "message"; id: string; text: string; agent?: AgentType; context?: DevChatContext }
   | { type: "cancel"; taskId: string }
   | { type: "confirm_response"; taskId: string; approved: boolean };
@@ -36,6 +36,8 @@ export type DownstreamMessage =
 export interface RelayConfig {
   port: number;
   secret: string;
+  jwtSecret?: string;
+  jwtAudience?: string;
   projectDir: string;
   openclawUrl: string;
   openclawToken: string;
