@@ -32,7 +32,7 @@ curl -X POST http://localhost:3010/api/test-email
 - `signIn` callback checks `AllowedUser.enabled`.
 - Signed-in users can call `/api/devchat-token`.
 - Endpoint mints short-lived HS256 JWT for relay.
-- Client app passes this token to `DevChatOverlay` as `token`.
+- If `DEVCHAT_APP_URL` is set, authenticated users are auto-redirected into your DevChat app with a short-lived token.
 
 ## Relay
 

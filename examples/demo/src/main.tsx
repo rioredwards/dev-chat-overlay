@@ -308,6 +308,7 @@ function App() {
       <DevChatOverlay
         url={`${location.protocol === "https:" ? "wss:" : "ws:"}//${location.host}/relay-ws`}
         secret={import.meta.env.VITE_DEVCHAT_SECRET}
+        token={new URLSearchParams(window.location.search).get("devchatToken") ?? undefined}
       />
     </div>
   );
