@@ -7,6 +7,7 @@ This file defines mandatory quality gates for all code changes.
 - One intent per change set (feature OR refactor OR infra), unless explicitly approved.
 - If 2 fix attempts fail on the same issue, stop and run a root-cause analysis before more edits.
 - Prefer structural fixes over patch churn.
+- Trigger phrase: **"run quality tax pass"** means refactor-only maintenance mode.
 
 ## Required Validation Before "Done"
 

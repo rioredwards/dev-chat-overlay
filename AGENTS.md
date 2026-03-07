@@ -13,6 +13,15 @@ Follow these project rules before implementing changes.
 - Do not perform iterative patch churn on the same symptom.
 - Prefer maintainable frontend patterns; avoid monolithic inline style blobs.
 
+## Quality Tax Trigger Phrase
+
+If Rio says **"run quality tax pass"**, switch to refactor-only mode:
+
+- no new features
+- focus on maintainability, anti-pattern removal, structure, and cleanup
+- enforce `QUALITY.md` + `UI_CONTRACT.md`
+- produce a short report of what was improved and why
+
 ## Close-the-Loop (Mandatory)
 
 Before claiming completion:
