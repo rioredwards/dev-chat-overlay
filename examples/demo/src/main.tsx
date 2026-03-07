@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { DevChatOverlay } from "@rio/dev-chat-widget";
 
 type Theme = "light" | "dark";
+type View = "landing" | "dashboard";
 
 const THEME_STORAGE_KEY = "demo-theme";
 
@@ -43,10 +44,10 @@ const themeVars: Record<Theme, Record<string, string>> = {
   },
 };
 
-const quickPrompts = [
-  "Make a personal portfolio",
-  "Create a bakery landing page",
-  "Build a startup waitlist page",
+const projects = [
+  { name: "Rio Portfolio", status: "Live", updated: "2m ago" },
+  { name: "Bakery Site", status: "Draft", updated: "14m ago" },
+  { name: "Waitlist Page", status: "Live", updated: "1h ago" },
 ];
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
     const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
     return savedTheme === "light" ? "light" : "dark";
   });
+  const [view, setView] = useState<View>("landing");
 
   useEffect(() => {
     const root = document.documentElement;
@@ -73,7 +75,6 @@ function App() {
     <div className="page">
       <style>{`
         * { box-sizing: border-box; }
-
         .page {
           min-height: 100vh;
           position: relative;
@@ -86,173 +87,50 @@ function App() {
             radial-gradient(circle at 72% 84%, var(--glow-3), transparent 44%),
             linear-gradient(165deg, var(--bg-a) 0%, var(--bg-b) 100%);
         }
-
-        .ambient {
-          position: absolute;
-          inset: -22vmax;
-          pointer-events: none;
-          filter: blur(70px);
-          opacity: 0.7;
-          z-index: 0;
-        }
-
-        .blob {
-          position: absolute;
-          border-radius: 999px;
-          mix-blend-mode: screen;
-          animation: drift linear infinite;
-        }
-
+        .ambient { position: absolute; inset: -22vmax; pointer-events: none; filter: blur(70px); opacity: 0.7; z-index: 0; }
+        .blob { position: absolute; border-radius: 999px; mix-blend-mode: screen; animation: drift linear infinite; }
         .blob.one { width: 48vmax; height: 42vmax; top: 10%; left: 4%; background: var(--glow-1); animation-duration: 30s; }
         .blob.two { width: 44vmax; height: 44vmax; top: 6%; right: 2%; background: var(--glow-2); animation-duration: 36s; }
         .blob.three { width: 42vmax; height: 34vmax; bottom: -4%; left: 24%; background: var(--glow-3); animation-duration: 33s; }
 
-        .shell {
-          position: relative;
-          z-index: 1;
-          max-width: 760px;
-          margin: 0 auto;
-          padding: 1rem 0.9rem 5rem;
-        }
+        .shell { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 1rem 0.9rem 5rem; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.75rem; border-radius: 0.95rem; border: 1px solid var(--glass-border); background: var(--glass); backdrop-filter: blur(14px); }
+        .brand { display: flex; align-items: center; gap: 0.52rem; font-weight: 700; font-size: 0.94rem; }
+        .dot { width: 0.62rem; height: 0.62rem; border-radius: 999px; background: linear-gradient(135deg, var(--primary), var(--accent)); }
 
-        .topbar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0.65rem 0.75rem;
-          border-radius: 0.95rem;
-          border: 1px solid var(--glass-border);
-          background: var(--glass);
-          backdrop-filter: blur(14px);
-          -webkit-backdrop-filter: blur(14px);
-        }
+        .icon-btn { width: 2.1rem; height: 2.1rem; border-radius: 0.7rem; border: 1px solid var(--secondary-border); background: var(--secondary); color: var(--text); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 1.02rem; }
 
-        .brand {
-          display: flex;
-          align-items: center;
-          gap: 0.52rem;
-          font-weight: 700;
-          font-size: 0.94rem;
-        }
-
-        .dot {
-          width: 0.62rem;
-          height: 0.62rem;
-          border-radius: 999px;
-          background: linear-gradient(135deg, var(--primary), var(--accent));
-        }
-
-        .icon-btn {
-          width: 2.1rem;
-          height: 2.1rem;
-          border-radius: 0.7rem;
-          border: 1px solid var(--secondary-border);
-          background: var(--secondary);
-          color: var(--text);
-          cursor: pointer;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.02rem;
-        }
-
-        .hero {
+        .hero, .dash {
           margin-top: 0.8rem;
           border-radius: 1.2rem;
           border: 1px solid var(--glass-border);
           background: linear-gradient(155deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
           background-color: var(--glass);
           backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
           box-shadow: 0 6px 16px rgba(20, 24, 38, 0.08);
           padding: 1.05rem;
         }
 
-        .chip {
-          display: inline-block;
-          font-size: 0.74rem;
-          color: var(--muted);
-          border: 1px solid var(--secondary-border);
-          background: var(--chip);
-          border-radius: 999px;
-          padding: 0.28rem 0.52rem;
-        }
+        .chip { display: inline-block; font-size: 0.74rem; color: var(--muted); border: 1px solid var(--secondary-border); background: var(--chip); border-radius: 999px; padding: 0.28rem 0.52rem; }
+        .title { margin: 0.72rem 0 0.3rem; font-size: clamp(1.62rem, 8vw, 2.26rem); line-height: 1.08; letter-spacing: -0.02em; max-width: 12ch; }
+        .sub { margin: 0; color: var(--muted); font-size: 0.98rem; }
 
-        .title {
-          margin: 0.72rem 0 0.3rem;
-          font-size: clamp(1.62rem, 8vw, 2.26rem);
-          line-height: 1.08;
-          letter-spacing: -0.02em;
-          max-width: 12ch;
-        }
+        .actions { margin-top: 0.88rem; display: grid; grid-template-columns: 1fr; gap: 0.56rem; }
+        .btn { border: 1px solid transparent; border-radius: 0.78rem; font-weight: 650; font-size: 0.96rem; padding: 0.72rem 0.9rem; cursor: pointer; text-align: center; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: var(--primary-ink); border-color: rgba(255, 196, 164, 0.4); box-shadow: 0 3px 10px rgba(240, 170, 120, 0.2); }
+        .btn-ghost { background: var(--secondary); color: var(--text); border-color: var(--secondary-border); }
 
-        .sub {
-          margin: 0;
-          color: var(--muted);
-          font-size: 0.98rem;
-        }
+        .dash-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+        .dash-title { margin: 0; font-size: 1.25rem; }
+        .stats { margin-top: 0.8rem; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0.5rem; }
+        .stat { border: 1px solid var(--secondary-border); border-radius: 0.7rem; padding: 0.6rem; background: var(--chip); }
+        .stat .k { font-size: 1.1rem; font-weight: 700; }
+        .stat .l { color: var(--muted); font-size: 0.78rem; }
 
-        .actions {
-          margin-top: 0.88rem;
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 0.56rem;
-        }
-
-        .btn {
-          border: 1px solid transparent;
-          border-radius: 0.78rem;
-          font-weight: 650;
-          font-size: 0.96rem;
-          padding: 0.72rem 0.9rem;
-          cursor: pointer;
-          text-align: center;
-        }
-
-        .btn-primary {
-          background: linear-gradient(135deg, var(--primary), var(--accent));
-          color: var(--primary-ink);
-          border-color: rgba(255, 196, 164, 0.4);
-          box-shadow: 0 3px 10px rgba(240, 170, 120, 0.2);
-        }
-
-        .btn-ghost {
-          background: var(--secondary);
-          color: var(--text);
-          border-color: var(--secondary-border);
-        }
-
-        .more {
-          margin-top: 0.8rem;
-          border: 1px solid var(--secondary-border);
-          border-radius: 0.8rem;
-          background: var(--chip);
-          padding: 0.6rem;
-        }
-
-        .more > summary {
-          cursor: pointer;
-          color: var(--muted);
-          font-size: 0.86rem;
-          list-style: none;
-        }
-
-        .more > summary::-webkit-details-marker { display: none; }
-
-        .prompt-list {
-          margin-top: 0.55rem;
-          display: grid;
-          gap: 0.38rem;
-        }
-
-        .prompt {
-          border: 1px solid var(--secondary-border);
-          border-radius: 0.65rem;
-          background: rgba(255,255,255,0.03);
-          padding: 0.48rem 0.55rem;
-          font-size: 0.83rem;
-          color: var(--text);
-        }
+        .project-list { margin-top: 0.8rem; display: grid; gap: 0.5rem; }
+        .project { border: 1px solid var(--secondary-border); border-radius: 0.75rem; padding: 0.65rem; background: rgba(255,255,255,0.03); display:flex; justify-content:space-between; align-items:center; gap: 0.5rem; }
+        .project-name { font-weight: 600; font-size: 0.92rem; }
+        .project-meta { color: var(--muted); font-size: 0.78rem; }
 
         @keyframes drift {
           0% { transform: translate3d(0, 0, 0) scale(1); }
@@ -270,39 +148,52 @@ function App() {
 
       <main className="shell">
         <header className="topbar">
-          <div className="brand">
-            <span className="dot" />
-            OpenClaw
-          </div>
-          <button
-            className="icon-btn"
-            aria-label={`Switch to ${nextTheme} mode`}
-            title={`Switch to ${nextTheme} mode`}
-            onClick={() => setTheme(nextTheme)}
-          >
+          <div className="brand"><span className="dot" />OpenClaw</div>
+          <button className="icon-btn" aria-label={`Switch to ${nextTheme} mode`} onClick={() => setTheme(nextTheme)}>
             {theme === "dark" ? "☀️" : "🌙"}
           </button>
         </header>
 
-        <section className="hero">
-          <span className="chip">Live website builder</span>
-          <h1 className="title">Describe it. Watch it appear.</h1>
-          <p className="sub">Open chat and start building your site in seconds.</p>
-
-          <div className="actions">
-            <button className="btn btn-primary">Open chat</button>
-            <button className="btn btn-ghost">See demo flow</button>
-          </div>
-
-          <details className="more">
-            <summary>Need ideas?</summary>
-            <div className="prompt-list">
-              {quickPrompts.map((idea) => (
-                <div className="prompt" key={idea}>{idea}</div>
-              ))}
+        {view === "landing" ? (
+          <section className="hero">
+            <span className="chip">Live website builder</span>
+            <h1 className="title">Describe it. Watch it appear.</h1>
+            <p className="sub">Open chat and start building your site in seconds.</p>
+            <div className="actions">
+              <button className="btn btn-primary" onClick={() => setView("dashboard")}>Open dashboard</button>
+              <button className="btn btn-ghost">Open chat</button>
             </div>
-          </details>
-        </section>
+          </section>
+        ) : (
+          <section className="dash">
+            <div className="dash-head">
+              <div>
+                <p className="chip">Workspace</p>
+                <h2 className="dash-title">Your projects</h2>
+              </div>
+              <button className="btn btn-ghost" onClick={() => setView("landing")}>Back</button>
+            </div>
+
+            <div className="stats">
+              <div className="stat"><div className="k">3</div><div className="l">Projects</div></div>
+              <div className="stat"><div className="k">2</div><div className="l">Live</div></div>
+              <div className="stat"><div className="k">12</div><div className="l">Prompts today</div></div>
+            </div>
+
+            <div className="project-list">
+              {projects.map((p) => (
+                <div className="project" key={p.name}>
+                  <div>
+                    <div className="project-name">{p.name}</div>
+                    <div className="project-meta">Updated {p.updated}</div>
+                  </div>
+                  <span className="chip">{p.status}</span>
+                </div>
+              ))}
+              <button className="btn btn-primary">+ New project</button>
+            </div>
+          </section>
+        )}
       </main>
 
       <DevChatOverlay
