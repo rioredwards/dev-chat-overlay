@@ -93,7 +93,7 @@ function App() {
         .blob.two { width: 44vmax; height: 44vmax; top: 6%; right: 2%; background: var(--glow-2); animation-duration: 36s; }
         .blob.three { width: 42vmax; height: 34vmax; bottom: -4%; left: 24%; background: var(--glow-3); animation-duration: 33s; }
 
-        .shell { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 1rem 0.9rem 5rem; }
+        .shell { position: relative; z-index: 1; width: min(1440px, calc(100vw - 2rem)); margin: 0 auto; padding: 1rem 0.9rem 5rem; }
         .topbar { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.75rem; border-radius: 0.95rem; border: 1px solid var(--glass-border); background: var(--glass); backdrop-filter: blur(14px); }
         .brand { display: flex; align-items: center; gap: 0.52rem; font-weight: 700; font-size: 0.94rem; }
         .dot { width: 0.62rem; height: 0.62rem; border-radius: 999px; background: linear-gradient(135deg, var(--primary), var(--accent)); }
