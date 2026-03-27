@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { clamp, loadJson, saveJson } from "./storage.js";
 
 export type Edge = "left" | "right";
 
@@ -24,10 +25,6 @@ function vp() {
   return { w: window.innerWidth, h: window.innerHeight };
 }
 
-function clamp(v: number, lo: number, hi: number) {
-  return Math.min(Math.max(v, lo), hi);
-}
-
 function snap(x: number, y: number, size: number, pad: number): DragPosition {
   const { w, h } = vp();
   const edge: Edge = x + size / 2 < w / 2 ? "left" : "right";
@@ -36,21 +33,6 @@ function snap(x: number, y: number, size: number, pad: number): DragPosition {
     y: clamp(y, pad, h - size - pad),
     edge,
   };
-}
-
-function load(key: string): DragPosition | null {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
-function save(key: string, pos: DragPosition) {
-  try {
-    localStorage.setItem(key, JSON.stringify(pos));
-  } catch {}
 }
 
 export function useDrag(opts: {
@@ -64,7 +46,7 @@ export function useDrag(opts: {
 
   const [position, setPosition] = useState<DragPosition>(() => {
     if (key) {
-      const saved = load(key);
+      const saved = loadJson<DragPosition>(key);
       if (saved) return saved;
     }
     if (typeof window === "undefined") return { x: 0, y: 0, edge: "right" as Edge };
@@ -129,7 +111,7 @@ export function useDrag(opts: {
           pad,
         );
         setPosition(snapped);
-        if (key) save(key, snapped);
+        if (key) saveJson(key, snapped);
       }
     }
 

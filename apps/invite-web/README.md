@@ -17,8 +17,8 @@ This project includes a test endpoint using your Resend API key:
 
 - `POST /api/test-email`
 - Uses:
-  - `AUTH_FROM` (set to `onboarding@mail.rioedwards.com` by default)
-  - `TEST_EMAIL_TO` (default `rioredwards@gmail.com`)
+  - `AUTH_FROM` (set to `devchat@example.com` by default)
+  - `TEST_EMAIL_TO` (default `you@example.com`)
 
 Example curl:
 

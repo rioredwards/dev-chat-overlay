@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { clamp, loadJson, saveJson } from "./storage.js";
 
 export interface PanelSize {
   width: number;
@@ -9,25 +10,6 @@ export interface UseResizeResult {
   size: PanelSize;
   isResizing: boolean;
   startResize: (e: React.PointerEvent, corner: "nw" | "ne") => void;
-}
-
-function clamp(v: number, lo: number, hi: number) {
-  return Math.min(Math.max(v, lo), hi);
-}
-
-function load(key: string): PanelSize | null {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
-function save(key: string, size: PanelSize) {
-  try {
-    localStorage.setItem(key, JSON.stringify(size));
-  } catch {}
 }
 
 export function useResize(opts: {
@@ -41,7 +23,7 @@ export function useResize(opts: {
 
   const [size, setSize] = useState<PanelSize>(() => {
     if (opts.storageKey) {
-      const saved = load(opts.storageKey);
+      const saved = loadJson<PanelSize>(opts.storageKey);
       if (saved) return saved;
     }
     return opts.defaultSize;
@@ -95,7 +77,7 @@ export function useResize(opts: {
       if (!info.current) return;
       info.current = null;
       setIsResizing(false);
-      if (opts.storageKey) save(opts.storageKey, sizeRef.current);
+      if (opts.storageKey) saveJson(opts.storageKey, sizeRef.current);
     }
 
     window.addEventListener("pointermove", onMove);

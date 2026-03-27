@@ -1,8 +1,8 @@
 import { resend } from "../../../lib/resend";
 
 export async function POST() {
-  const from = process.env.AUTH_FROM || "onboarding@mail.rioedwards.com";
-  const to = process.env.TEST_EMAIL_TO || "rioredwards@gmail.com";
+  const from = process.env.AUTH_FROM || "devchat@example.com";
+  const to = process.env.TEST_EMAIL_TO || "you@example.com";
 
   const result = await resend.emails.send({
     from,

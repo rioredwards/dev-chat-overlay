@@ -4,9 +4,12 @@
   "workspaces": ["packages/*"],
   "scripts": {
     "build": "npm run build --workspaces",
-    "test": "npx tsx test/test-e2e.ts",
+    "test": "tsx test/test-e2e.ts",
     "dev": "npm run dev --prefix examples/demo",
     "dev:mock": "npm run dev:mock --prefix examples/demo",
     "dev:relay": "npm run dev -w @rio/dev-chat-relay"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0"
   }
 }

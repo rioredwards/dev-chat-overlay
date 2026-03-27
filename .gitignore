@@ -3,3 +3,9 @@ dist/
 *.tsbuildinfo
 .env
 .env.local
+.env.*
+.DS_Store
+**/.next/
+**/dist/
+**/*.db
+**/*.sqlite

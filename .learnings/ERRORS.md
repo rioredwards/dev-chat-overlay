@@ -2,7 +2,7 @@
 
 **Logged**: 2026-03-05T09:58:00Z
 **Priority**: medium
-**Status**: pending
+**Status**: resolved
 **Area**: tests
 
 ### Summary

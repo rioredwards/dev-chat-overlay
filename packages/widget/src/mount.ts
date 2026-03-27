@@ -9,16 +9,19 @@ export function mountDevChat(config: DevChatConfig): () => void {
   container.id = "__dco-root";
   document.body.appendChild(container);
 
+  let rootRef: import("react-dom/client").Root | null = null;
+
   Promise.all([
     import("react"),
     import("react-dom/client"),
     import("./widget/DevChatOverlay.js"),
   ]).then(([React, { createRoot }, { DevChatOverlay }]) => {
-    const root = createRoot(container);
-    root.render(React.createElement(DevChatOverlay, config));
+    rootRef = createRoot(container);
+    rootRef.render(React.createElement(DevChatOverlay, config));
   });
 
   return () => {
+    rootRef?.unmount();
     container.remove();
   };
 }

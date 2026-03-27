@@ -29,13 +29,10 @@ export function validateOrigin(req: IncomingMessage, allowedOrigins?: string[]):
 
 export function validateSecret(provided: string, expected: string): boolean {
   if (!expected || !provided) return false;
-  // Constant-time comparison to avoid timing attacks
-  if (provided.length !== expected.length) return false;
-  let mismatch = 0;
-  for (let i = 0; i < provided.length; i++) {
-    mismatch |= provided.charCodeAt(i) ^ expected.charCodeAt(i);
-  }
-  return mismatch === 0;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
 }
 
 export interface RelayTokenClaims {
