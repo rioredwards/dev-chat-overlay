@@ -1,5 +1,6 @@
 # AGENTS.md (dev-chat-overlay)
 
+**Class:** `production`
 Follow these project rules before implementing changes.
 
 ## Required Reads
